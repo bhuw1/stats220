@@ -1,0 +1,88 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+
+```
+
+```{css}
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f7f9fc;
+  margin: 20px;
+}
+
+h2 {
+  color: #1DB954; 
+  text-align: center;
+}
+
+p {
+  font-size: 16px;
+  color: #333333;
+}
+
+.plot {
+  margin: 20px auto;
+}
+
+div {
+  background-color: #ffffff;
+  padding: 10px;
+  border-radius: 10px;
+}
+```
+
+## Spotify Listening Analysis
+
+This report analyses my Spotify listening habits, including genres, moods, and listening time.
+
+```{r}
+library(tidyverse)
+logged_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vREvemnv0MB26G5_cvFlQOd1vFgiPIq1CS7M2M8vEBx6vw5ylZbdak6EIFWjjJLBWE6zrxe-xqeU9Zi/pub?output=csv")
+
+latest_data <- logged_data %>%
+  rename(
+    duration = `Song duration (seconds)`,
+    genre = `Genre of song`,
+    mood = `Mood of song`,
+    time = `When did you listen?`
+  )
+```
+
+```{r}
+paste("The average song duration is", round(mean(latest_data$duration, na.rm=TRUE),1), "seconds.")
+
+paste("The longest song duration is", max(latest_data$duration, na.rm=TRUE), "seconds.")
+```
+
+# Genre
+
+```{r}
+latest_data %>%
+  ggplot() +
+  geom_bar(aes(x = genre)) +
+  labs(title = "Genre Distribution", x = "Genre", y = "Count")
+
+```
+
+# Mood Distribution
+
+```{r}
+latest_data %>%
+  ggplot() +
+  geom_bar(aes(x = mood)) +
+  labs(title = "Mood Distribution", x = "Mood", y = "Count")
+```
+
+# Listening Time Distribution
+
+```{r}
+latest_data %>%
+  ggplot() +
+  geom_bar(aes(x = time)) +
+  labs(title = "Listening Time Distribution", x = "Time", y = "Count")
+```
